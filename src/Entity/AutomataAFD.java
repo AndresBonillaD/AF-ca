@@ -15,31 +15,22 @@ import java.util.Scanner;
  *
  * @author crist
  */
-public class AutomataAFD {
+public class AutomataAFD extends FiniteStateMachine {
 
-    public List<String> Alfabeto;
-    public Estado EstadoInicial;
-    public List<Estado> Estados;
-    public List<Estado> EstadosAceptacion;
+    
     Scanner scan = new Scanner(System.in);
 
+    public AutomataAFD() {
+    }
+
     public AutomataAFD(String estadoInicial) {
-        EstadoInicial = new Estado(estadoInicial);
-
-        Alfabeto = new ArrayList<>();
-        Estados = new ArrayList<>();
-
-        Estados.add(EstadoInicial);
-        EstadosAceptacion = new ArrayList<>();
+        super(estadoInicial);
     }
 
     public AutomataAFD(List<String> alfabeto, Estado estado, List<Estado> estados, List<Estado> estadosAceptacion) {
-        this.Alfabeto = alfabeto;
-        this.EstadoInicial = estado;
-        this.Estados = estados;
-        this.EstadosAceptacion = estadosAceptacion;
+        super(alfabeto, estado, estados, estadosAceptacion);
     }
-
+    
     public void AgregarEstado(String nombreEstado) {
 
         Estado existeEstado = new Estado(nombreEstado);

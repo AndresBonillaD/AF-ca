@@ -20,21 +20,17 @@ import java.util.regex.Pattern;
  */
 public class NewFileReader {
     
-    
-    
-    
-    
+    static String typeRegex = "^(#!)(nfe|nfd|nfn)$";
+    static String alphabetRegex = "^([^\n\t\r$])$|^([^\n\t$\r])-([^\n\t$\r])$";
+    static String statesRegex = "^([^;>\r\n\t ])([^;>\r\n\t]*)$";
+    static String tratitionsiiRegex = "^([^;>\r\n\t ])([^;>\r\n\t]*):([^\n\t\r])>([^;>\r\n\t ])([^;>\r\n\t]*)(;([^;>\r\n\t ])([^;>\r\n\t]*))*$";
     
     public NewFileReader() {
     }
-    
-    
+        
     public static FiniteStateMachine generateAutomata(String fileRute){
         
-        String typeRegex = "^(#!)(nfe|nfd|nfn)$";
-        String alphabetRegex = "^([^\n\t\r$])$|^([^\n\t$\r])-([^\n\t$\r])$";
-        String statesRegex = "^([^;>\r\n\t ])([^;>\r\n\t]*)$";
-        String tratitionsiiRegex = "^([^;>\r\n\t ])([^;>\r\n\t]*):([^\n\t\r])>([^;>\r\n\t ])([^;>\r\n\t]*)(;([^;>\r\n\t ])([^;>\r\n\t]*))*$";
+        
         
         
         FiniteStateMachine automataFinito = new FiniteStateMachine();
@@ -70,60 +66,77 @@ public class NewFileReader {
             }
         }
         
+        Pattern patron = Pattern.compile(typeRegex);
+        Matcher m = patron.matcher(fileLines.get(0));
+        boolean match = m.matches();
         
-        
+        int readerHead = 0;
     
-        for (String fileLine : fileLines) {
-            
-            Pattern patron = Pattern.compile(typeRegex);
-            Matcher m = patron.matcher(fileLine);
-            boolean match = m.find();
-            
-            if(fileLines.indexOf(fileLine) == 0 && match){          //identifica el tipo de automata  #!dfa  #!nfa  #!nfe
-                System.out.println("Primera Linea: " + fileLine + ";" + match);
-                
-            }else if(fileLine.equals("#alphabet") && fileLines.indexOf(fileLine) == 1){     //separador del alfabeto
-                System.out.println("generating alphabet...");                               //cambiea patron Regex
-                patron = Pattern.compile(alphabetRegex);
-                m = patron.matcher(fileLine);
-                match = m.find();
-                System.out.println("---------------" + match);
-                if (fileLine != "#states" && match){
-                    System.out.println("---------------");
-                    //capturar alphabeto
-                }
-                
-            }else if(fileLine.equals("#states")){                   //separador de estados
-                System.out.println("generating states ...");       //cambia patron Regex
-                patron = Pattern.compile(statesRegex);
-                m = patron.matcher(fileLine);
-                match = m.find();
-                
-                if (match && fileLine != "#initial"){
-                    System.out.println("generating Initial state ...");
-                    //capturar estados
-                } 
-                
-            }else if(fileLine.equals("#accepting")){
-                System.out.println("generating accentance states ...");
-                if (match && fileLine != "#transitions"){               // NO cambia patron Regex, sigue leyendo estaods
-                    System.out.println("---" + fileLine + "---");
-                    //capturar estados de aceptación
-                }
-                                                
-            }else if(fileLine.equals("#transitions")){
-                System.out.println("generating transitions ...");       //cambia patron Regex
-                patron = Pattern.compile(tratitionsiiRegex);
-                m = patron.matcher(fileLine);
-                match = m.find();                
-                
-                if (match && fileLine != "#transitions"){
-                    //capturar transiciones
-                }
-            
+        if(match){
+            if(fileLines.get(0).equals("!dfa")){
+                System.out.println("Linea: 0" + ";" + fileLines.get(0) + ";" + match);
+                // crear afd
+            }else if(fileLines.get(0).equals("!nfa")){
+                System.out.println("Linea: 0" + ";" + fileLines.get(0) + ";" + match);
+                // crear afn
+            }else if(fileLines.get(0).equals("!nfe")){
+                System.out.println("Linea: 0" + ";" + fileLines.get(0) + ";" + match);
+                // crear afdl
             }else{
-                System.out.println("¡¡WARNING!!  :" + fileLine);
-            } 
+                System.out.println("WARNING:    formato no aceptado");
+            }
+        }else{
+            System.out.println("WARNING:    Primera linea mal formulada");
+        }
+        
+        for (int i = 0; i < fileLines.size(); i++) {
+            
+            if(fileLines.get(i).equals("#alphabet")){
+                System.out.println("generando alfabeto...");
+                while(i <= fileLines.size() && !fileLines.get(i + 1).equals("#states")){
+                    System.out.println("Linea: " + (i+1) + ";" + fileLines.get(i + 1));
+                    //generar alfabeto
+                    i++;
+                }
+            }
+            
+            if(fileLines.get(i).equals("#states")){
+                System.out.println("generando estados...");
+                while(i <= fileLines.size() && !fileLines.get(i + 1).equals("#initial")){
+                    System.out.println("Linea: " + (i+1) + ";" + fileLines.get(i + 1));
+                    //generar estados
+                    i++;
+                }
+            }
+            
+            if(fileLines.get(i).equals("#inital")){
+                System.out.println("generando estado inicial...");
+                while(i <= fileLines.size() && !fileLines.get(i + 1).equals("#accepting")){
+                    System.out.println("Linea: " + (i+1) + ";" + fileLines.get(i + 1));
+                    //generar estado inicial
+                    i++;
+                }
+            }
+            
+            if(fileLines.get(i).equals("#accepting")){
+                System.out.println("generando estados de aceptacion...");
+                while(i <= fileLines.size() && !fileLines.get(i + 1).equals("#transitions")){
+                    System.out.println("Linea: " + (i+1) + ";" + fileLines.get(i + 1));
+                    //generar estados de aceptación
+                    i++;
+                }
+            }
+            
+            if(fileLines.get(i).equals("#transitions")){
+                System.out.println("generando transiciones...");
+                i++;
+                while(i < fileLines.size()){
+                    System.out.println("Linea: " + (i) + ";" + fileLines.get(i));
+                    //generar trasiciones
+                    i++;
+                }
+            }
+             
                 
                 
                 

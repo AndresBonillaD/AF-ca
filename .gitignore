@@ -14,11 +14,6 @@ hs_err_pid*
 #############################
 files
 ##############################
-#Archivos de texto con automatas
-##############################
-nfd_dosEstados_dosSimbolos.txt
-files
-##############################
 ## Maven
 ##############################
 target/

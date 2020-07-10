@@ -6,7 +6,6 @@
 package Controller;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -16,9 +15,8 @@ import java.util.List;
 public class Estado {
 
     public String nombre;
-    public List<Transicion> Transiciones;
-    public boolean multi;
-
+    public List<Transicion> Transiciones ;
+    
     public Estado() {
         nombre = new String();
         Transiciones = null;
@@ -30,16 +28,9 @@ public class Estado {
     }
 
     public void AgregarTransicion(String caracter, Estado estadoDestino) {
-        Transicion añadir = new Transicion(caracter, estadoDestino);
-
+        Transicion añadir = new Transicion(caracter,estadoDestino);
+       
         Transiciones.add(añadir);
-
-    }
-
-    public void BorrarTransicion(String caracter, Estado estadoDestino) {
-        Transicion añadir = new Transicion(caracter, estadoDestino);
-
-        Transiciones.remove(añadir);
 
     }
 
@@ -52,20 +43,16 @@ public class Estado {
         }
         return DevuelveTransiciones;
     }
-
-    public List<String> posiblesEstados() {
-        List<String> list = new ArrayList<String>(Arrays.asList(nombre.split(" ")));
-
-        return list;
-    }
-
-    public boolean validarAFD(Estado actual, String caracter) {
-
-        if (BuscarTransicion(caracter).size() > 1) {
+    
+    public boolean validarAFD(Estado actual, String caracter){
+        
+        if(BuscarTransicion(caracter).size()>1){
             return false;
         }
-
+        
+        
         return true;
     }
+    
 
 }

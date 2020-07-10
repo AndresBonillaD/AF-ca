@@ -150,7 +150,7 @@ public class AutomataAFN {
     }
 
     public boolean procesarCadena(String Cadena, Estado estadoActual) {
-        if (Cadena.length() == 0 || Cadena.equals("$")) {
+        if (Cadena.length() == 0) {
             for (int i = 0; i < EstadosAceptacion.size(); i++) {
                 if (EstadosAceptacion.get(i) == estadoActual) {
                     return true;

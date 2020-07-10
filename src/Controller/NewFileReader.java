@@ -96,6 +96,7 @@ public class NewFileReader {
                 while(i <= fileLines.size() && !fileLines.get(i + 1).equals("#states")){
                     System.out.println("Linea: " + (i+1) + ";" + fileLines.get(i + 1));
                     //generar alfabeto
+                    //generateAlphabet();
                     i++;
                 }
             }
@@ -155,6 +156,12 @@ public class NewFileReader {
     return automataFinito;
     }
     
+    public static void generateAlphabet(String line){
+        Pattern alhabetPattern = Pattern.compile(alphabetRegex);
+        Matcher m = alhabetPattern.matcher(line);
+        boolean isAcceoted = m.matches();
+        System.out.println("-" + line + "," + isAcceoted);
+    }
     
     
     

@@ -21,6 +21,7 @@ public class AutomataAFD {
     public Estado EstadoInicial;
     public List<Estado> Estados;
     public List<Estado> EstadosAceptacion;
+    public List<String> detalleEstados ;
     Scanner scan = new Scanner(System.in);
 
     public AutomataAFD(String estadoInicial) {
@@ -30,7 +31,11 @@ public class AutomataAFD {
         Estados = new ArrayList<>();
 
         Estados.add(EstadoInicial);
+        
         EstadosAceptacion = new ArrayList<>();
+        detalleEstados = new ArrayList<>();
+        
+        detalleEstados.add(EstadoInicial.nombre);
     }
 
     public AutomataAFD(List<String> alfabeto, Estado estado, List<Estado> estados, List<Estado> estadosAceptacion) {
@@ -79,7 +84,7 @@ public class AutomataAFD {
         EstadosAceptacion.add(estadoQ1);
 
         estadoQ0.AgregarTransicion("a", estadoQ1);
-        estadoQ1.AgregarTransicion("a", estadoQ1);
+      //  estadoQ1.AgregarTransicion("a", estadoQ1);
         estadoQ1.AgregarTransicion("a", estadoQ2);
         estadoQ2.AgregarTransicion("b", estadoQ1);
         
@@ -155,7 +160,7 @@ public class AutomataAFD {
     }
 
     public boolean procesarCadena(String Cadena, Estado estadoActual) {
-        if (Cadena.length() == 0) {
+        if (Cadena.length() == 0 || Cadena.equals("$")) {
             for (int i = 0; i < EstadosAceptacion.size(); i++) {
                 if (EstadosAceptacion.get(i) == estadoActual) {
                     return true;
@@ -221,6 +226,41 @@ public class AutomataAFD {
             
         }
         
+    }
+    public boolean procesarCadenaConDetalles(String Cadena, Estado estadoActual) {
+        if (Cadena.length() == 0 || Cadena.equals("$")) {
+            for (int i = 0; i < EstadosAceptacion.size(); i++) {
+                if (EstadosAceptacion.get(i) == estadoActual) {
+                    detalleEstados.add(estadoActual.nombre) ;
+                    return true;
+                }
+            }
+        } else {
+            String caracterEvaluar = Cadena.substring(0, 1);
+            String cadenaRestante = Cadena.substring(1, Cadena.length());
+
+            //Si la cadena que se recibe por parmaetro es de longitud 1 al buscar la transicion se debe evaluar si el estado destino es valido, retorna true, sino false.
+            List<Transicion> transicionEncontrada = estadoActual.BuscarTransicion(caracterEvaluar);
+            if (transicionEncontrada == null || transicionEncontrada.isEmpty()) {
+                return false;
+            }
+
+            for (int j = 0; j < transicionEncontrada.size(); j++) {
+                boolean respuesta = procesarCadena(cadenaRestante, transicionEncontrada.get(j).EstadosDestino);
+                if (respuesta) {
+                    detalleEstados.add(transicionEncontrada.get(j).EstadosDestino.nombre);
+                    return true;
+                }
+            }
+
+        }
+        return false;
+
+    }
+    public void listaEstados(){
+        for (int i = 0; i < detalleEstados.size(); i++) {
+            System.out.println(detalleEstados.get(i));
+        }
     }
 
 }
